@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 function StoryCard({ story }) {
   const navigate = useNavigate();
 
-  function openStory() {
-    navigate(`/story/${story.id}`, {
+function openStory() {
+    console.log("Clicked story:", story);
+
+    navigate("/story", {
       state: { story },
     });
-  }
+}
 
   return (
     <article

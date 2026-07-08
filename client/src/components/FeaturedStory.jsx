@@ -1,11 +1,20 @@
+import { useNavigate } from "react-router-dom";
+
 function FeaturedStory({ story }) {
+  const navigate = useNavigate();
+
   if (!story) return null;
+
+  function openStory() {
+    navigate("/story", {
+      state: { story },
+    });
+  }
 
   return (
     <section className="max-w-7xl mx-auto px-8 mt-16">
       <div className="grid lg:grid-cols-2 gap-10 bg-white rounded-3xl shadow-lg overflow-hidden">
 
-        {/* Story Image */}
         <div>
           <img
             src={story.image}
@@ -14,7 +23,6 @@ function FeaturedStory({ story }) {
           />
         </div>
 
-        {/* Story Details */}
         <div className="p-10 flex flex-col justify-center">
 
           <span className="inline-block w-fit bg-purple-100 text-purple-700 text-sm font-semibold px-4 py-2 rounded-full">
@@ -29,21 +37,17 @@ function FeaturedStory({ story }) {
             {story.summary}
           </p>
 
-          {/* Metadata */}
           <div className="flex gap-6 mt-8 text-gray-500 text-sm">
             <span>{story.source}</span>
-            <span>{story.readTime}</span>
+            <span>{story.readTime} min read</span>
           </div>
 
-          {/* Read Button */}
-          <a
-            href={story.url}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={openStory}
             className="mt-10 w-fit bg-purple-600 text-white px-8 py-4 rounded-full font-semibold hover:bg-purple-700 transition-colors"
           >
-            Read Story →
-          </a>
+            Open Today's Brief →
+          </button>
 
         </div>
 

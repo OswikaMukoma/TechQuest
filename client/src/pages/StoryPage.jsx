@@ -8,18 +8,18 @@ function StoryPage() {
   const story = state?.story;
 
   const [insight, setInsight] = useState(null);
-  const [loadingInsight, setLoadingInsight] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadInsight() {
       if (!story) return;
 
-      setLoadingInsight(true);
+      setLoading(true);
 
-      const data = await getTechQuestInsight(story);
+      const result = await getTechQuestInsight(story);
 
-      setInsight(data);
-      setLoadingInsight(false);
+      setInsight(result);
+      setLoading(false);
     }
 
     loadInsight();
@@ -27,15 +27,9 @@ function StoryPage() {
 
   if (!story) {
     return (
-      <>
-        <Navbar />
-
-        <div className="min-h-screen flex items-center justify-center">
-          <h1 className="text-3xl font-bold text-gray-700">
-            Story not found.
-          </h1>
-        </div>
-      </>
+      <div className="min-h-screen flex items-center justify-center">
+        <h1 className="text-2xl font-bold">Story not found.</h1>
+      </div>
     );
   }
 
@@ -45,54 +39,74 @@ function StoryPage() {
 
       <main className="max-w-5xl mx-auto px-6 py-10">
 
-        {/* Header */}
-
-        <section className="mb-10">
-
-          <p className="uppercase tracking-widest text-purple-600 font-semibold">
-            🧠 TechQuest Brief
-          </p>
-
-          <h1 className="text-5xl font-extrabold mt-3 leading-tight">
-            {story.title}
-          </h1>
-
-          <div className="flex gap-4 mt-5 text-gray-500 text-sm">
-            <span>{story.source}</span>
-            <span>•</span>
-            <span>{story.readTime} min read</span>
-          </div>
-
-        </section>
-
-        {/* Story Image */}
+        {/* Hero Image */}
 
         <img
           src={story.image}
           alt={story.title}
-          className="w-full h-[450px] object-cover rounded-3xl shadow-lg"
+          className="w-full h-96 object-cover rounded-3xl"
         />
 
-        {/* TechQuest Insight */}
+        {/* Title */}
 
-        <section className="bg-white rounded-3xl shadow-md mt-12 p-8">
+        <h1 className="text-5xl font-bold mt-8 leading-tight">
+          {story.title}
+        </h1>
+
+        {/* Meta */}
+
+        <div className="flex flex-wrap gap-6 text-gray-500 mt-4 mb-12">
+
+          <span>{story.source}</span>
+
+          <span>{story.readTime} min read</span>
+
+        </div>
+
+        {/* Today's Brief */}
+
+        <section className="bg-white rounded-3xl shadow-md p-8 mb-10">
 
           <h2 className="text-3xl font-bold mb-8">
-            🧠 TechQuest Insight
+            📰 Today's Brief
           </h2>
 
-          {loadingInsight ? (
-            <p className="text-gray-500">
-              Generating your TechQuest Insight...
-            </p>
+          {loading ? (
+
+            <div className="py-12 text-center">
+
+              <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-6"></div>
+
+              <p className="text-lg font-medium">
+                🧠 TechQuest is preparing today's insight...
+              </p>
+
+            </div>
+
+          ) : !insight ? (
+
+            <div className="space-y-4">
+
+              <p className="text-lg">
+                Today's insight isn't available right now.
+              </p>
+
+              <p className="text-gray-600">
+                You can still read the original article below.
+              </p>
+
+            </div>
+
           ) : (
+
             <>
+
               {/* What Happened */}
 
               <div className="mb-10">
 
-                <h3 className="text-xl font-bold mb-3">
-                  📌 What happened?
+                <h3 className="text-2xl font-semibold mb-3">
+                  📌 What Happened
                 </h3>
 
                 <p className="text-gray-700 leading-8">
@@ -101,12 +115,12 @@ function StoryPage() {
 
               </div>
 
-              {/* Why It Matters */}
+              {/* Career Connection */}
 
-              <div>
+              <div className="mb-10">
 
-                <h3 className="text-xl font-bold mb-3">
-                  🌍 Why this matters
+                <h3 className="text-2xl font-semibold mb-3">
+                  💼 Career Connection
                 </h3>
 
                 <p className="text-gray-700 leading-8">
@@ -114,63 +128,67 @@ function StoryPage() {
                 </p>
 
               </div>
-            </>
-          )}
 
-        </section>
+              {/* Quick Check */}
 
-        {/* Quick Check */}
+              <div>
 
-        <section className="bg-white rounded-3xl shadow-md mt-8 p-8">
-
-          <h2 className="text-3xl font-bold mb-8">
-            💡 Quick Check
-          </h2>
-
-          {loadingInsight ? (
-            <p className="text-gray-500">
-              Preparing questions...
-            </p>
-          ) : (
-            insight.quickCheck.map((question, index) => (
-              <div
-                key={index}
-                className="mb-10"
-              >
-                <h3 className="text-xl font-semibold mb-5">
-                  {index + 1}. {question.question}
+                <h3 className="text-2xl font-semibold mb-6">
+                  📝 Quick Check
                 </h3>
 
-                <div className="space-y-3">
+                <div className="space-y-8">
 
-                  {question.options.map((option, optionIndex) => (
-                    <button
-                      key={optionIndex}
-                      className="w-full text-left px-5 py-3 rounded-xl border border-gray-300 hover:border-purple-600 hover:bg-purple-50 transition"
+                  {insight.quickCheck?.map((question, index) => (
+
+                    <div
+                      key={index}
+                      className="border rounded-2xl p-6"
                     >
-                      {String.fromCharCode(65 + optionIndex)}. {option}
-                    </button>
+                      <h4 className="font-semibold mb-4">
+                        {index + 1}. {question.question}
+                      </h4>
+
+                      <div className="space-y-3">
+
+                        {question.options.map((option, optionIndex) => (
+
+                          <button
+                            key={optionIndex}
+                            className="w-full text-left border rounded-xl px-4 py-3 hover:bg-gray-100 transition"
+                          >
+                            {option}
+                          </button>
+
+                        ))}
+
+                      </div>
+
+                    </div>
+
                   ))}
 
                 </div>
 
               </div>
-            ))
+
+            </>
+
           )}
 
         </section>
 
-        {/* Read Full Article */}
+        {/* Read Full Story */}
 
-        <div className="mt-10 text-center">
+        <div className="flex justify-center">
 
           <a
             href={story.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-full font-semibold transition"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold transition"
           >
-            Read Full Article →
+            🌍 Read Full Story
           </a>
 
         </div>
