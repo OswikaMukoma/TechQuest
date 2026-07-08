@@ -3,21 +3,21 @@ function FeaturedStory({ story }) {
 
   return (
     <section className="max-w-7xl mx-auto px-8 mt-16">
-      <div className="grid lg:grid-cols-2 gap-10 items-center bg-white rounded-3xl shadow-lg overflow-hidden">
+      <div className="grid lg:grid-cols-2 gap-10 bg-white rounded-3xl shadow-lg overflow-hidden">
 
-        {/* Image */}
-        <div className="h-full">
+        {/* Story Image */}
+        <div>
           <img
             src={story.image}
             alt={story.title}
-            className="w-full h-full object-cover min-h-[420px]"
+            className="w-full h-full min-h-[420px] object-cover"
           />
         </div>
 
-        {/* Content */}
-        <div className="p-10">
+        {/* Story Details */}
+        <div className="p-10 flex flex-col justify-center">
 
-          <span className="inline-block bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-semibold">
+          <span className="inline-block w-fit bg-purple-100 text-purple-700 text-sm font-semibold px-4 py-2 rounded-full">
             ⭐ Featured Story
           </span>
 
@@ -25,25 +25,28 @@ function FeaturedStory({ story }) {
             {story.title}
           </h2>
 
-          <p className="text-gray-600 mt-6 text-lg leading-8">
+          <p className="text-gray-600 text-lg mt-6 leading-8">
             {story.summary}
           </p>
 
-          <div className="flex gap-6 text-gray-500 mt-8 text-sm">
+          {/* Metadata */}
+          <div className="flex gap-6 mt-8 text-gray-500 text-sm">
             <span>{story.source}</span>
             <span>{story.readTime}</span>
           </div>
 
+          {/* Read Button */}
           <a
             href={story.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex mt-10 bg-purple-600 text-white px-8 py-4 rounded-full font-semibold hover:bg-purple-700 transition"
+            className="mt-10 w-fit bg-purple-600 text-white px-8 py-4 rounded-full font-semibold hover:bg-purple-700 transition-colors"
           >
             Read Story →
           </a>
 
         </div>
+
       </div>
     </section>
   );
