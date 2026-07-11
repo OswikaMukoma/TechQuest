@@ -1,58 +1,25 @@
-// ======================================================
-// TechQuest Relevance Engine v3
-// ======================================================
+// ===========================================================
+// TechQuest Relevance Engine v4
+// ===========================================================
 
-// ---------- Trusted Sources ----------
-
-const trustedSources = [
-  "TechCrunch",
-  "The Verge",
-  "Ars Technica",
-  "Wired",
-  "MIT Technology Review",
-  "BBC",
-  "Reuters",
-  "Associated Press",
-  "The Guardian",
-  "Business Insider",
-  "ComputerWeekly.com",
-  "CNBC",
-  "Bloomberg",
-  "Forbes",
-  "ZDNet",
-  "InfoWorld",
-  "VentureBeat",
-  "OpenAI",
-  "Microsoft",
-  "Google",
-  "AWS",
-  "O'Reilly",
-];
-
-// ---------- Sources to Ignore ----------
-
-const blockedSources = [
-  "PRNewswire",
-  "GlobeNewswire",
-  "Business Wire",
-  "Yahoo Entertainment",
-  "The Daily Hodl",
-  "ZyCrypto",
-  "Biztoc.com",
-  "Crypto Briefing",
-  "PhoneArena",
-  "Android Authority",
-  "IGN",
-  "Nintendo Life",
-  "Eurogamer",
-  "Digital Foundry",
-];
-
-// ---------- Topics TechQuest Wants ----------
-
-const positiveKeywords = [
+const REQUIRED_TOPICS = [
+  "internship",
+  "graduate",
+  "graduate programme",
+  "graduate program",
+  "career",
+  "careers",
+  "job",
+  "jobs",
+  "hiring",
+  "student",
+  "students",
+  "university",
+  "universities",
+  "scholarship",
+  "education",
+  "research",
   "artificial intelligence",
-  "ai",
   "machine learning",
   "deep learning",
   "chatgpt",
@@ -60,168 +27,204 @@ const positiveKeywords = [
   "anthropic",
   "gemini",
   "copilot",
-
-  "software engineering",
-  "software developer",
   "developer",
+  "software",
+  "software engineering",
   "programming",
-  "coding",
-  "python",
-  "javascript",
-  "java",
-  "react",
-  "github",
-
   "cloud",
   "aws",
   "azure",
-  "google cloud",
-
   "cybersecurity",
-
-  "career",
-  "careers",
-  "graduate",
-  "graduates",
-  "internship",
-  "internships",
-  "student",
-  "students",
-  "university",
-  "universities",
-  "scholarship",
-
-  "research",
-
-  "microsoft",
-  "google",
-  "amazon",
-  "meta",
-  "nvidia",
-
   "startup",
-  "startups",
+  "founder",
+  "funding",
 ];
 
-// ---------- Topics to Reject ----------
-
-const blockedKeywords = [
-  "iphone",
-  "android",
-  "galaxy",
-  "pixel",
+const BANNED_TOPICS = [
+  "review",
+  "hands on",
+  "hands-on",
   "camera",
+  "battery",
+  "display",
   "smartphone",
   "phone",
-
+  "iphone",
+  "pixel",
+  "galaxy",
+  "oneplus",
+  "xiaomi",
+  "tablet",
+  "earbuds",
   "gaming",
-  "playstation",
   "xbox",
+  "playstation",
   "steam",
+  "pokemon",
   "fortnite",
   "minecraft",
   "call of duty",
-
-  "celebrity",
+  "assassin",
   "movie",
   "movies",
-  "tv",
+  "tv show",
+  "celebrity",
   "netflix",
   "disney",
-
-  "football",
-  "soccer",
-  "basketball",
-  "nba",
-  "fifa",
-
-  "review",
-  "hands-on",
-  "benchmark",
-  "unboxing",
-
-  "rumor",
-  "rumour",
-  "leak",
-
-  "bitcoin",
-  "ethereum",
-  "crypto",
-  "cryptocurrency",
-
-  "loan",
-  "loans",
+  "coupon",
+  "discount",
+  "deal",
+  "sale",
+  "shopping",
+  "free shipping",
+  "buy now",
 ];
 
-// ======================================================
+const POSITIVE_RULES = [
+  { score: 12, words: ["internship","graduate","graduate programme","graduate program","hiring"] },
 
-function containsAny(text, list) {
-  return list.some((word) => text.includes(word));
+  { score: 10, words: ["career","careers","job","jobs"] },
+
+  { score: 9, words: ["student","students","university","universities","scholarship","education"] },
+
+  { score: 9, words: ["research"] },
+
+  { score: 9, words: ["artificial intelligence","machine learning","deep learning"] },
+
+  { score: 8, words: ["openai","anthropic","chatgpt","gemini","copilot"] },
+
+  { score: 7, words: ["software","software engineering","developer","programming"] },
+
+  { score: 7, words: ["cloud","aws","azure","cybersecurity"] },
+
+  { score: 6, words: ["startup","founder","funding"] },
+];
+
+// ------------------------------------------------------------
+
+function escapeRegex(text) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-export function filterRelevantStories(stories) {
-  const filtered = stories.filter((story) => {
-    const source = (story.source || "").toLowerCase();
+function containsWord(text, word) {
+  const regex = new RegExp(`\\b${escapeRegex(word)}\\b`, "i");
+  return regex.test(text);
+}
 
-    const text = `
-      ${story.title || ""}
-      ${story.summary || ""}
-      ${story.description || ""}
-    `.toLowerCase();
+function scoreText(text, multiplier = 1) {
+  let score = 0;
+  const reasons = [];
 
-    // Reject blocked sources
-    if (
-      blockedSources.some((s) =>
-        source.includes(s.toLowerCase())
-      )
-    ) {
-      return false;
+  for (const rule of POSITIVE_RULES) {
+    for (const word of rule.words) {
+      if (containsWord(text, word)) {
+        score += rule.score * multiplier;
+        reasons.push(`+ ${word}`);
+      }
     }
+  }
 
-    // Prefer trusted sources, but don't require them
-    const trusted =
-      trustedSources.some((s) =>
-        source.includes(s.toLowerCase())
-      );
+  return { score, reasons };
+}
 
-    // Reject unwanted topics
-    if (containsAny(text, blockedKeywords)) {
-      return false;
+function calculateScore(story) {
+  const title = (story.title || "").toLowerCase();
+  const summary = (story.summary || "").toLowerCase();
+
+  // --------------------------------------------------------
+  // Hard rejection
+  // --------------------------------------------------------
+
+  for (const word of BANNED_TOPICS) {
+    if (containsWord(title, word) || containsWord(summary, word)) {
+      return {
+        score: -100,
+        reasons: [`Rejected: ${word}`],
+      };
     }
+  }
 
-    // Must mention at least one TechQuest topic
-    if (!containsAny(text, positiveKeywords)) {
-      return false;
-    }
+  // --------------------------------------------------------
+  // Must contain at least one TechQuest topic
+  // --------------------------------------------------------
 
-    // Calculate a simple relevance score
-    let score = 0;
-
-    positiveKeywords.forEach((word) => {
-      if (text.includes(word)) score++;
-    });
-
-    if (trusted) score += 5;
-
-    story.relevanceScore = score;
-
-    return score >= 2;
-  });
-
-  filtered.sort(
-    (a, b) => b.relevanceScore - a.relevanceScore
+  const relevant = REQUIRED_TOPICS.some(
+    word =>
+      containsWord(title, word) ||
+      containsWord(summary, word)
   );
 
-  console.log(`📰 Received ${stories.length} stories`);
-  console.log(`✅ Showing ${filtered.length} TechQuest stories`);
+  if (!relevant) {
+    return {
+      score: -100,
+      reasons: ["Rejected: not a TechQuest story"],
+    };
+  }
+
+  // --------------------------------------------------------
+  // Score title (worth double)
+  // --------------------------------------------------------
+
+  const titleScore = scoreText(title, 2);
+
+  // --------------------------------------------------------
+  // Score summary
+  // --------------------------------------------------------
+
+  const summaryScore = scoreText(summary, 1);
+
+  return {
+    score: titleScore.score + summaryScore.score,
+    reasons: [...titleScore.reasons, ...summaryScore.reasons],
+  };
+}
+
+// ===========================================================
+
+export function filterRelevantStories(stories) {
+  // Score every story
+  const rankedStories = stories.map((story) => {
+    const result = calculateScore(story);
+
+    return {
+      ...story,
+      relevanceScore: result.score,
+      relevanceReasons: result.reasons,
+    };
+  });
+
+  // Show ALL scored stories
+  console.group("🧠 TechQuest Relevance Engine");
+
+  console.log(`📰 Total stories received: ${rankedStories.length}`);
 
   console.table(
-    filtered.map((story) => ({
+    rankedStories.map((story) => ({
       Score: story.relevanceScore,
-      Source: story.source,
       Title: story.title,
+      Reasons: story.relevanceReasons.join(", "),
     }))
   );
 
-  return filtered;
+  // Keep only good stories
+  const filteredStories = rankedStories
+    .filter((story) => story.relevanceScore >= 18)
+    .sort((a, b) => b.relevanceScore - a.relevanceScore);
+
+  console.log(
+    `✅ Stories after filtering: ${filteredStories.length}`
+  );
+
+  console.table(
+    filteredStories.map((story) => ({
+      Score: story.relevanceScore,
+      Title: story.title,
+      Source: story.source,
+      Reasons: story.relevanceReasons.join(", "),
+    }))
+  );
+
+  console.groupEnd();
+
+  return filteredStories;
 }
