@@ -1,86 +1,227 @@
-// Positive keywords
-const positiveKeywords = {
-  ai: 5,
-  "artificial intelligence": 5,
-  openai: 5,
-  microsoft: 4,
-  google: 4,
-  amazon: 4,
-  meta: 4,
-  nvidia: 5,
-  github: 4,
-  internship: 6,
-  graduate: 6,
-  graduates: 6,
-  career: 6,
-  careers: 6,
-  hiring: 5,
-  university: 6,
-  universities: 6,
-  student: 6,
-  students: 6,
-  scholarship: 6,
-  research: 4,
-  cloud: 4,
-  software: 4,
-  developer: 4,
-  engineering: 4,
-  cybersecurity: 4,
-  "machine learning": 5,
-  "data science": 5,
-  startup: 3,
-  certification: 5,
-};
+// ======================================================
+// TechQuest Relevance Engine v3
+// ======================================================
 
-// Negative keywords
-const negativeKeywords = {
-  iphone: -3,
-  android: -2,
-  galaxy: -2,
-  smartphone: -4,
-  camera: -4,
-  television: -5,
-  tv: -5,
-  gaming: -4,
-  xbox: -4,
-  playstation: -4,
-  netflix: -3,
-  disney: -3,
-  celebrity: -6,
-  rumor: -3,
-  rumours: -3,
-  leak: -3,
-};
+// ---------- Trusted Sources ----------
 
-function calculateScore(story) {
-  const text = `
-    ${story.title || ""}
-    ${story.summary || ""}
-  `.toLowerCase();
+const trustedSources = [
+  "TechCrunch",
+  "The Verge",
+  "Ars Technica",
+  "Wired",
+  "MIT Technology Review",
+  "BBC",
+  "Reuters",
+  "Associated Press",
+  "The Guardian",
+  "Business Insider",
+  "ComputerWeekly.com",
+  "CNBC",
+  "Bloomberg",
+  "Forbes",
+  "ZDNet",
+  "InfoWorld",
+  "VentureBeat",
+  "OpenAI",
+  "Microsoft",
+  "Google",
+  "AWS",
+  "O'Reilly",
+];
 
-  let score = 0;
+// ---------- Sources to Ignore ----------
 
-  Object.entries(positiveKeywords).forEach(([keyword, points]) => {
-    if (text.includes(keyword)) {
-      score += points;
-    }
-  });
+const blockedSources = [
+  "PRNewswire",
+  "GlobeNewswire",
+  "Business Wire",
+  "Yahoo Entertainment",
+  "The Daily Hodl",
+  "ZyCrypto",
+  "Biztoc.com",
+  "Crypto Briefing",
+  "PhoneArena",
+  "Android Authority",
+  "IGN",
+  "Nintendo Life",
+  "Eurogamer",
+  "Digital Foundry",
+];
 
-  Object.entries(negativeKeywords).forEach(([keyword, points]) => {
-    if (text.includes(keyword)) {
-      score += points;
-    }
-  });
+// ---------- Topics TechQuest Wants ----------
 
-  return score;
+const positiveKeywords = [
+  "artificial intelligence",
+  "ai",
+  "machine learning",
+  "deep learning",
+  "chatgpt",
+  "openai",
+  "anthropic",
+  "gemini",
+  "copilot",
+
+  "software engineering",
+  "software developer",
+  "developer",
+  "programming",
+  "coding",
+  "python",
+  "javascript",
+  "java",
+  "react",
+  "github",
+
+  "cloud",
+  "aws",
+  "azure",
+  "google cloud",
+
+  "cybersecurity",
+
+  "career",
+  "careers",
+  "graduate",
+  "graduates",
+  "internship",
+  "internships",
+  "student",
+  "students",
+  "university",
+  "universities",
+  "scholarship",
+
+  "research",
+
+  "microsoft",
+  "google",
+  "amazon",
+  "meta",
+  "nvidia",
+
+  "startup",
+  "startups",
+];
+
+// ---------- Topics to Reject ----------
+
+const blockedKeywords = [
+  "iphone",
+  "android",
+  "galaxy",
+  "pixel",
+  "camera",
+  "smartphone",
+  "phone",
+
+  "gaming",
+  "playstation",
+  "xbox",
+  "steam",
+  "fortnite",
+  "minecraft",
+  "call of duty",
+
+  "celebrity",
+  "movie",
+  "movies",
+  "tv",
+  "netflix",
+  "disney",
+
+  "football",
+  "soccer",
+  "basketball",
+  "nba",
+  "fifa",
+
+  "review",
+  "hands-on",
+  "benchmark",
+  "unboxing",
+
+  "rumor",
+  "rumour",
+  "leak",
+
+  "bitcoin",
+  "ethereum",
+  "crypto",
+  "cryptocurrency",
+
+  "loan",
+  "loans",
+];
+
+// ======================================================
+
+function containsAny(text, list) {
+  return list.some((word) => text.includes(word));
 }
 
 export function filterRelevantStories(stories) {
-  return stories
-    .map((story) => ({
-      ...story,
-      relevanceScore: calculateScore(story),
+  const filtered = stories.filter((story) => {
+    const source = (story.source || "").toLowerCase();
+
+    const text = `
+      ${story.title || ""}
+      ${story.summary || ""}
+      ${story.description || ""}
+    `.toLowerCase();
+
+    // Reject blocked sources
+    if (
+      blockedSources.some((s) =>
+        source.includes(s.toLowerCase())
+      )
+    ) {
+      return false;
+    }
+
+    // Prefer trusted sources, but don't require them
+    const trusted =
+      trustedSources.some((s) =>
+        source.includes(s.toLowerCase())
+      );
+
+    // Reject unwanted topics
+    if (containsAny(text, blockedKeywords)) {
+      return false;
+    }
+
+    // Must mention at least one TechQuest topic
+    if (!containsAny(text, positiveKeywords)) {
+      return false;
+    }
+
+    // Calculate a simple relevance score
+    let score = 0;
+
+    positiveKeywords.forEach((word) => {
+      if (text.includes(word)) score++;
+    });
+
+    if (trusted) score += 5;
+
+    story.relevanceScore = score;
+
+    return score >= 2;
+  });
+
+  filtered.sort(
+    (a, b) => b.relevanceScore - a.relevanceScore
+  );
+
+  console.log(`📰 Received ${stories.length} stories`);
+  console.log(`✅ Showing ${filtered.length} TechQuest stories`);
+
+  console.table(
+    filtered.map((story) => ({
+      Score: story.relevanceScore,
+      Source: story.source,
+      Title: story.title,
     }))
-    .filter((story) => story.relevanceScore >= 5)
-    .sort((a, b) => b.relevanceScore - a.relevanceScore);
+  );
+
+  return filtered;
 }

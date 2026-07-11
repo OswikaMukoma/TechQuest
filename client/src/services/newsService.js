@@ -10,9 +10,11 @@ import { filterRelevantStories } from "./relevanceEngine.js";
 
 export async function fetchStories(category = "technology") {
   try {
-    const articles = await getTopStories(category);
+    const articles = await getTopStories();
 
-    const stories = articles.map(normalizeNewsArticle);
+    const stories = articles
+       .map(normalizeNewsArticle)
+       .filter((story) => story.title && story.summary);
 
     // ⭐ Keep only stories relevant to TechQuest
     const relevantStories = filterRelevantStories(stories);
