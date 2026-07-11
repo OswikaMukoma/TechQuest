@@ -1,6 +1,5 @@
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
-import TrendingTopics from "../components/TrendingTopics";
 import FeaturedStory from "../components/FeaturedStory";
 import StoryGrid from "../components/StoryGrid";
 
@@ -59,7 +58,6 @@ function Home() {
 
       <Hero />
 
-      <TrendingTopics />
 
       <FeaturedStory story={featuredStory} />
 

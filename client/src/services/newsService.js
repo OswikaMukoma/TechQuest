@@ -6,13 +6,18 @@ import {
   normalizeNASA,
 } from "./storyNormalizer";
 
+import { filterRelevantStories } from "./relevanceEngine.js";
+
 export async function fetchStories(category = "technology") {
   try {
     const articles = await getTopStories(category);
 
     const stories = articles.map(normalizeNewsArticle);
 
-    return stories;
+    // ⭐ Keep only stories relevant to TechQuest
+    const relevantStories = filterRelevantStories(stories);
+
+    return relevantStories;
   } catch (error) {
     console.error(error);
 
