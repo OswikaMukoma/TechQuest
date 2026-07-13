@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 
+import insightRoutes from "./routes/insightRoutes.js";
+
 const app = express();
 
 // Middleware
@@ -13,5 +15,8 @@ app.get("/", (req, res) => {
     message: "🚀 TechQuest API is running!",
   });
 });
+
+// Insight API
+app.use("/api/insight", insightRoutes);
 
 export default app;

@@ -1,22 +1,24 @@
 import { Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
 
 import Home from "./pages/Home";
 import Explore from "./pages/Explore";
 import StoryPage from "./pages/StoryPage";
 import About from "./pages/About";
 
+import { testSupabase } from "./testSupabase";
+
 function App() {
+  useEffect(() => {
+    testSupabase();
+  }, []);
+
   return (
     <Routes>
-
       <Route path="/" element={<Home />} />
-
       <Route path="/explore" element={<Explore />} />
-
-      <Route path="/story/:id" element={<StoryPage />} />
-
+      <Route path="/story" element={<StoryPage />} />
       <Route path="/about" element={<About />} />
-
     </Routes>
   );
 }

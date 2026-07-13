@@ -1,0 +1,38 @@
+Development Roadmap
+✅ Phase 1 — News Platform
+News providers
+Categories
+Search
+Featured story
+
+Status: Complete.
+
+✅ Phase 2 — Architecture
+Story normalization
+News service
+Express backend
+Prompt builder
+
+Status: Complete.
+
+🔄 Phase 3 — AI Integration
+Connect OpenAI
+Generate Today's Brief
+Generate Career Connection
+Generate Quick Check
+
+Status: Waiting on OpenAI billing.
+
+🔜 Phase 4 — Frontend Integration
+Story page calls backend
+Loading state
+Error handling
+Display AI content
+Read Full Story button
+🎉 Phase 5 — Polish
+Better animations
+Improved typography
+Empty states
+Mobile refinements
+Final testing
+Deployment
