@@ -336,7 +336,7 @@ async function main() {
   const { error: deleteStoriesError } = await supabase
     .from("stories")
     .delete()
-    .neq("id", 0);
+    .gt("relevance_score", -1000);
 
   if (deleteStoriesError) {
     throw deleteStoriesError;
@@ -381,7 +381,7 @@ async function main() {
   const { error: deleteBriefError } = await supabase
     .from("tech_brief")
     .delete()
-    .neq("id", "00000000-0000-0000-0000-000000000000");
+    .not("id", "is", null);
 
   if (deleteBriefError) {
     throw deleteBriefError;
