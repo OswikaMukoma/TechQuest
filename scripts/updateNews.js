@@ -336,7 +336,7 @@ async function main() {
   const { error: deleteStoriesError } = await supabase
     .from("stories")
     .delete()
-    .gt("relevance_score", -1000);
+    .not("id", "is", null);
 
   if (deleteStoriesError) {
     throw deleteStoriesError;
