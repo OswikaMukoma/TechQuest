@@ -349,19 +349,23 @@ async function main() {
   //----------------------------------------------------
 
   const storiesToInsert = finalStories.map((story) => ({
-    title: story.title,
-    summary: story.summary,
-    description: story.description,
-    url: story.url,
-    image: story.image,
-    source: story.source,
-    published_at: story.publishedAt,
-    relevance_score: story.relevanceScore,
-    what_happened: story.whatHappened,
-    why_it_matters: story.whyItMatters,
-    quick_check: story.quickCheck,
-  }));
+  title: story.title,
 
+  // Your table has "description", not "summary"
+  description: story.summary || story.description,
+
+  url: story.url,
+  image: story.image,
+  source: story.source,
+  published_at: story.publishedAt,
+
+  // Your table has "score", not "relevance_score"
+  score: story.relevanceScore,
+
+  what_happened: story.whatHappened,
+  why_it_matters: story.whyItMatters,
+  quick_check: story.quickCheck,
+}));
   const { error: insertStoriesError } = await supabase
     .from("stories")
     .insert(storiesToInsert);
