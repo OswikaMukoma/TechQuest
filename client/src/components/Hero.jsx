@@ -121,29 +121,7 @@ function Hero() {
 
         </div>
       </section>
-
-      {/* WHY TECHQUEST */}
-
-      <section className="bg-purple-50 py-24">
-
-        <div className="mx-auto max-w-5xl px-8 text-center">
-
-          <h2 className="text-5xl font-black">
-            Why TechQuest?
-          </h2>
-
-          <p className="mx-auto mt-8 max-w-3xl text-xl leading-9 text-slate-600">
-            Most news platforms try to show you everything.
-            TechQuest filters out the noise so you can focus on
-            opportunities, technology and innovations that can shape
-            your future.
-          </p>
-
-        </div>
-
-      </section>
-
-      {/* FINAL CTA */}
+     {/* FINAL CTA */}
 
       <section className="py-24">
 
@@ -167,6 +145,28 @@ function Hero() {
         </div>
 
       </section>
+      {/* WHY TECHQUEST */}
+
+      <section className="bg-purple-50 py-24">
+
+        <div className="mx-auto max-w-5xl px-8 text-center">
+
+          <h2 className="text-5xl font-black">
+            Why TechQuest?
+          </h2>
+
+          <p className="mx-auto mt-8 max-w-3xl text-xl leading-9 text-slate-600">
+            Most news platforms try to show you everything.
+            TechQuest filters out the noise so you can focus on
+            opportunities, technology and innovations that can shape
+            your future.
+          </p>
+
+        </div>
+
+      </section>
+
+      
 
     </main>
   );

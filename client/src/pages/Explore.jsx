@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 import Navbar from "../components/Navbar";
-import SearchBar from "../components/SearchBar";
 import CategoryChips from "../components/CategoryChips";
 import FeaturedStory from "../components/FeaturedStory";
 import StoryGrid from "../components/StoryGrid";
@@ -74,19 +73,9 @@ function Explore() {
         </section>
 
         {/* Search */}
-        <SearchBar />
 
         {/* Categories */}
-        <CategoryChips
-          selected={selectedCategory}
-          onSelect={(category) => {
-            if (category === "All") {
-              setSelectedCategory("technology");
-            } else {
-              setSelectedCategory(category.toLowerCase());
-            }
-          }}
-        />
+        
 
         {/* Featured Story */}
         <FeaturedStory story={featuredStory} />
