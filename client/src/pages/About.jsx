@@ -17,7 +17,7 @@ export default function About() {
             className="mx-auto w-full max-w-4xl"
           />
 
-          <p className="mt-10 text-xl leading-9 text-slate-600">
+          <p className="mt-10 text-xl leading-9 text-slate-800">
             TechQuest is built for curious students and young professionals
             who want to stay ahead in technology, careers and innovation—
             without spending hours scrolling through dozens of news websites.
@@ -38,7 +38,7 @@ export default function About() {
               Learn
             </h2>
 
-            <p className="mt-4 leading-7 text-slate-600">
+            <p className="mt-4 leading-7 text-slate-800">
               Discover breakthroughs in AI, technology,
               universities and research that actually matter.
             </p>
@@ -55,7 +55,7 @@ export default function About() {
               Grow
             </h2>
 
-            <p className="mt-4 leading-7 text-slate-600">
+            <p className="mt-4 leading-7 text-slate-800">
               Stay updated with internships,
               graduate programmes,
               scholarships and career opportunities.
@@ -73,7 +73,7 @@ export default function About() {
               Explore
             </h2>
 
-            <p className="mt-4 leading-7 text-slate-600">
+            <p className="mt-4 leading-7 text-slate-800">
               We filter out the noise so you can focus on the
               stories that help you build your future.
             </p>
@@ -89,7 +89,7 @@ export default function About() {
             Stay Curious. Keep Exploring.
           </h2>
 
-          <p className="mt-5 text-lg text-slate-500">
+          <p className="mt-5 text-lg text-slate-700">
             Every great career starts with curiosity.
           </p>
 
