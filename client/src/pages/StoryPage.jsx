@@ -10,6 +10,9 @@ function StoryPage() {
   const [insight, setInsight] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Stores the selected answer for each question
+  const [selectedAnswers, setSelectedAnswers] = useState({});
+
   useEffect(() => {
     async function loadInsight() {
       if (!story) return;
@@ -25,10 +28,21 @@ function StoryPage() {
     loadInsight();
   }, [story]);
 
+  function chooseAnswer(questionIndex, optionIndex) {
+    if (selectedAnswers[questionIndex] !== undefined) return;
+
+    setSelectedAnswers((prev) => ({
+      ...prev,
+      [questionIndex]: optionIndex,
+    }));
+  }
+
   if (!story) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <h1 className="text-2xl font-bold">Story not found.</h1>
+        <h1 className="text-2xl font-bold">
+          Story not found.
+        </h1>
       </div>
     );
   }
@@ -39,7 +53,7 @@ function StoryPage() {
 
       <main className="max-w-5xl mx-auto px-6 py-10">
 
-        {/* Hero Image */}
+        {/* Hero */}
 
         <img
           src={story.image}
@@ -56,11 +70,8 @@ function StoryPage() {
         {/* Meta */}
 
         <div className="flex flex-wrap gap-6 text-gray-500 mt-4 mb-12">
-
           <span>{story.source}</span>
-
           <span>{story.readTime} min read</span>
-
         </div>
 
         {/* Today's Brief */}
@@ -109,7 +120,7 @@ function StoryPage() {
                   📌 What Happened
                 </h3>
 
-                <p className="text-gray-700 leading-8">
+                <p className="text-gray-700 leading-8 whitespace-pre-line">
                   {insight.whatHappened}
                 </p>
 
@@ -123,7 +134,7 @@ function StoryPage() {
                   💼 Career Connection
                 </h3>
 
-                <p className="text-gray-700 leading-8">
+                <p className="text-gray-700 leading-8 whitespace-pre-line">
                   {insight.whyItMatters}
                 </p>
 
@@ -139,34 +150,115 @@ function StoryPage() {
 
                 <div className="space-y-8">
 
-                  {insight.quickCheck?.map((question, index) => (
+                  {insight.quickCheck?.map((question, questionIndex) => {
 
-                    <div
-                      key={index}
-                      className="border rounded-2xl p-6"
-                    >
-                      <h4 className="font-semibold mb-4">
-                        {index + 1}. {question.question}
-                      </h4>
+                    const selected =
+                      selectedAnswers[questionIndex];
 
-                      <div className="space-y-3">
+                    const answered =
+                      selected !== undefined;
 
-                        {question.options.map((option, optionIndex) => (
+                    return (
 
-                          <button
-                            key={optionIndex}
-                            className="w-full text-left border rounded-xl px-4 py-3 hover:bg-gray-100 transition"
-                          >
-                            {option}
-                          </button>
+                      <div
+                        key={questionIndex}
+                        className="border rounded-2xl p-6"
+                      >
 
-                        ))}
+                        <h4 className="font-semibold text-lg mb-5">
+                          {questionIndex + 1}. {question.question}
+                        </h4>
+
+                        <div className="space-y-3">
+
+                          {question.options.map((option, optionIndex) => {
+
+                            let buttonClass =
+                              "w-full text-left border rounded-xl px-4 py-3 transition ";
+
+                            if (!answered) {
+
+                              buttonClass +=
+                                "hover:bg-gray-100";
+
+                            } else {
+
+                              if (
+                                optionIndex ===
+                                question.correctAnswer
+                              ) {
+
+                                buttonClass +=
+                                  "bg-green-100 border-green-500";
+
+                              } else if (
+                                optionIndex === selected
+                              ) {
+
+                                buttonClass +=
+                                  "bg-red-100 border-red-500";
+
+                              } else {
+
+                                buttonClass +=
+                                  "opacity-60";
+
+                              }
+
+                            }
+
+                            return (
+
+                              <button
+                                key={optionIndex}
+                                disabled={answered}
+                                onClick={() =>
+                                  chooseAnswer(
+                                    questionIndex,
+                                    optionIndex
+                                  )
+                                }
+                                className={buttonClass}
+                              >
+                                {option}
+                              </button>
+
+                            );
+
+                          })}
+
+                        </div>
+                        {answered && (
+
+                          <div className="mt-5 rounded-xl bg-slate-50 p-4 border">
+
+                            {selected === question.correctAnswer ? (
+
+                              <p className="font-semibold text-green-700 mb-2">
+                                ✅ Correct!
+                              </p>
+
+                            ) : (
+
+                              <p className="font-semibold text-red-700 mb-2">
+                                ❌ Incorrect
+                              </p>
+
+                            )}
+
+                            <p className="text-gray-700">
+                              {question.explanation}
+                            </p>
+
+                          </div>
+
+                        )}
 
                       </div>
 
-                    </div>
+                    );
 
-                  ))}
+                  })}
 
                 </div>
 
@@ -194,8 +286,11 @@ function StoryPage() {
         </div>
 
       </main>
+
     </>
+
   );
+
 }
 
 export default StoryPage;

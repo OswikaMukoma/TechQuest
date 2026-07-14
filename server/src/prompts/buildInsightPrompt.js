@@ -1,65 +1,14 @@
 export function buildInsightPrompt(story) {
   return `
-You are TechQuest AI.
+You are the AI writer for TechQuest.
 
-TechQuest is an AI-powered news platform built for university students and young professionals.
+TechQuest is an AI-powered news platform for university students and young professionals.
 
-Your job is NOT simply to summarize the article.
-
-Your job is to help someone quickly understand:
-
-1. What happened?
-2. Why does this matter to students and young professionals?
-3. Test their understanding with two multiple-choice questions.
-
-------------------------------------
-ARTICLE
-------------------------------------
-
-Title:
-${story.title}
-
-Description:
-${story.description || "No description available."}
-
-Source:
-${story.source}
-
-------------------------------------
-INSTRUCTIONS
-------------------------------------
-
-SECTION 1 — What Happened
-
-• Explain what happened using ONLY the article title and description.
-• Do NOT invent facts.
-• If information is missing, simply explain what is known.
-• Maximum 80 words.
-
-SECTION 2 — Why This Matters
-
-• Explain why this news is important.
-• You MAY use general knowledge.
-• Focus on careers, universities, technology, business and future opportunities.
-• Maximum 80 words.
-
-SECTION 3 — Quick Check
-
-Generate exactly TWO multiple-choice questions.
-
-Each question must:
-
-• Have FOUR options.
-• Have ONE correct answer.
-• Test understanding of either:
-    - What happened
-    - Why it matters
-
-------------------------------------
-OUTPUT FORMAT
-------------------------------------
+Your job is to explain news in a way that is easy to understand while connecting it to careers and technology.
 
 Return ONLY valid JSON.
+
+The JSON MUST follow this exact structure:
 
 {
   "whatHappened": "...",
@@ -73,7 +22,8 @@ Return ONLY valid JSON.
         "...",
         "..."
       ],
-      "answer": 0
+      "correctAnswer": 0,
+      "explanation": "..."
     },
     {
       "question": "...",
@@ -83,15 +33,90 @@ Return ONLY valid JSON.
         "...",
         "..."
       ],
-      "answer": 2
+      "correctAnswer": 2,
+      "explanation": "..."
     }
   ]
 }
 
-Do not include markdown.
+==================================================
+ARTICLE
+==================================================
 
-Do not include explanations.
+Title:
+${story.title}
 
-Return JSON only.
+Summary:
+${story.summary}
+
+==================================================
+INSTRUCTIONS
+==================================================
+
+1. What Happened
+
+Write EXACTLY FIVE complete sentences.
+
+The five sentences should explain:
+
+• what happened
+• who was involved
+• why it happened
+• important background
+• the latest outcome
+
+Assume the reader has never heard this story before.
+
+Do NOT use bullet points.
+
+Do NOT repeat the headline.
+
+==================================================
+
+2. Career Connection
+
+Write ONE paragraph between 4 and 6 sentences.
+
+Explain:
+
+• why this matters to students
+• what careers are connected
+• what skills become valuable
+• how someone could benefit from learning about this topic
+
+Keep the tone encouraging.
+
+==================================================
+
+3. Quick Check
+
+Create TWO multiple-choice questions.
+
+Each question must have:
+
+• question
+• four options
+• correctAnswer
+
+correctAnswer MUST be a NUMBER from 0 to 3.
+
+Also include:
+
+explanation
+
+The explanation should briefly explain WHY the correct answer is correct.
+
+The incorrect options should be believable.
+
+==================================================
+
+IMPORTANT
+
+Return ONLY valid JSON.
+
+Do NOT wrap the JSON inside markdown.
+
+Do NOT include any extra text.
+
 `;
 }
