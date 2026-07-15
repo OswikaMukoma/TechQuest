@@ -24,10 +24,10 @@ function Hero() {
               starts here.
             </h1>
 
-            <p className="mt-8 text-xl leading-9 text-slate-600">
+            <p className="mt-8 text-2xl leading-9 text-slate-600">
               TechQuest helps students and young professionals discover
               breakthroughs in AI, internships, graduate programmes,
-              startups and technology — without the endless scrolling.
+              startups and technology - without the endless scrolling.
             </p>
 
             <Link
@@ -61,7 +61,7 @@ function Hero() {
               🎯 Today's Quest
             </h2>
 
-            <p className="mt-5 text-xl text-gray-500">
+            <p className="mt-5 text-2xl text-gray-500">
               Explore curated stories that actually matter.
             </p>
 
@@ -155,7 +155,7 @@ function Hero() {
             Why TechQuest?
           </h2>
 
-          <p className="mx-auto mt-8 max-w-3xl text-xl leading-9 text-slate-600">
+          <p className="mx-auto mt-8 max-w-4xl text-xl leading-9 text-slate-600">
             Most news platforms try to show you everything.
             TechQuest filters out the noise so you can focus on
             opportunities, technology and innovations that can shape

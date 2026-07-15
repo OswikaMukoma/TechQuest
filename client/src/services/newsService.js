@@ -1,40 +1,63 @@
-import { getTopStories } from "../api/newsApi";
-import { getSpaceStory } from "../api/nasaApi";
-
+import { supabase } from "../lib/supabase";
 import {
-  normalizeNewsArticle,
   normalizeNASA,
 } from "./storyNormalizer";
 
-import { filterRelevantStories } from "./relevanceEngine.js";
+import { getSpaceStory } from "../api/nasaApi";
 
-export async function fetchStories(category = "technology") {
-  try {
-    const articles = await getTopStories();
+export async function fetchStories() {
 
-    const stories = articles
-       .map(normalizeNewsArticle)
-       .filter((story) => story.title && story.summary);
+  const { data, error } = await supabase
+    .from("stories")
+    .select("*")
+    .order("score", { ascending: false });
 
-    // ⭐ Keep only stories relevant to TechQuest
-    const relevantStories = filterRelevantStories(stories);
-
-    return relevantStories;
-  } catch (error) {
+  if (error) {
     console.error(error);
-
     return [];
   }
+
+  return data.map((story) => ({
+    id: story.id,
+
+    title: story.title,
+
+    summary: story.description,
+
+    description: story.description,
+
+    url: story.url,
+
+    image: story.image,
+
+    source: story.source,
+
+    publishedAt: story.published_at,
+
+    relevanceScore: story.score,
+
+    whatHappened: story.what_happened,
+
+    whyItMatters: story.why_it_matters,
+
+    quickCheck: story.quick_check,
+  }));
 }
 
 export async function fetchSpaceStory() {
+
   try {
+
     const story = await getSpaceStory();
 
     return normalizeNASA(story);
+
   } catch (error) {
+
     console.error(error);
 
     return null;
+
   }
+
 }
