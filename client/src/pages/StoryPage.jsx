@@ -1,32 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { getTechQuestInsight } from "../services/insightService";
 
 function StoryPage() {
   const { state } = useLocation();
   const story = state?.story;
 
-  const [insight, setInsight] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  // Stores the selected answer for each question
   const [selectedAnswers, setSelectedAnswers] = useState({});
-
-  useEffect(() => {
-    async function loadInsight() {
-      if (!story) return;
-
-      setLoading(true);
-
-      const result = await getTechQuestInsight(story);
-
-      setInsight(result);
-      setLoading(false);
-    }
-
-    loadInsight();
-  }, [story]);
 
   function chooseAnswer(questionIndex, optionIndex) {
     if (selectedAnswers[questionIndex] !== undefined) return;
@@ -82,28 +62,16 @@ function StoryPage() {
             📰 Today's Brief
           </h2>
 
-          {loading ? (
-
-            <div className="py-12 text-center">
-
-              <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-6"></div>
-
-              <p className="text-lg font-medium">
-                🧠 TechQuest is preparing today's insight...
-              </p>
-
-            </div>
-
-          ) : !insight ? (
+          {!story.what_happened ? (
 
             <div className="space-y-4">
 
               <p className="text-lg">
-                Today's insight isn't available right now.
+                Today's insight isn't available yet.
               </p>
 
               <p className="text-gray-600">
-                You can still read the original article below.
+                Please check back after the next daily update.
               </p>
 
             </div>
@@ -121,7 +89,7 @@ function StoryPage() {
                 </h3>
 
                 <p className="text-gray-700 leading-8 whitespace-pre-line">
-                  {insight.whatHappened}
+                  {story.what_happened}
                 </p>
 
               </div>
@@ -135,7 +103,7 @@ function StoryPage() {
                 </h3>
 
                 <p className="text-gray-700 leading-8 whitespace-pre-line">
-                  {insight.whyItMatters}
+                  {story.why_it_matters}
                 </p>
 
               </div>
@@ -150,7 +118,7 @@ function StoryPage() {
 
                 <div className="space-y-8">
 
-                  {insight.quickCheck?.map((question, questionIndex) => {
+                  {story.quick_check?.map((question, questionIndex) => {
 
                     const selected =
                       selectedAnswers[questionIndex];
@@ -228,6 +196,7 @@ function StoryPage() {
                           })}
 
                         </div>
+
                         {answered && (
 
                           <div className="mt-5 rounded-xl bg-slate-50 p-4 border">
@@ -288,9 +257,7 @@ function StoryPage() {
       </main>
 
     </>
-
   );
-
 }
 
 export default StoryPage;
