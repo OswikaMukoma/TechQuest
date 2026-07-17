@@ -19,7 +19,7 @@ export default function About() {
 
           <p className="mt-12 max-w-5xl mx-auto text-3xl leading-relaxed text-slate-800">
             TechQuest is built for curious students and young professionals
-            who want to stay ahead in technology, careers and innovation—
+            who want to stay ahead in technology, careers and innovation-
             without spending hours scrolling through dozens of news websites.
           </p>
 
@@ -109,7 +109,7 @@ export default function About() {
               sources, filters articles using a custom relevance engine, and
               uses AI to generate easy-to-understand explanations,
               career-focused insights and interactive quizzes. The goal isn't
-              simply to deliver news—it's to make learning from the latest
+              simply to deliver news-it's to make learning from the latest
               developments in technology engaging, accessible and genuinely
               useful.
             </p>
