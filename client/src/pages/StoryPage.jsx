@@ -27,6 +27,8 @@ function StoryPage() {
     );
   }
 
+  console.log("Story received:", story);
+
   return (
     <>
       <Navbar />
@@ -51,7 +53,6 @@ function StoryPage() {
 
         <div className="flex flex-wrap gap-6 text-gray-500 mt-4 mb-12">
           <span>{story.source}</span>
-          <span>{story.readTime} min read</span>
         </div>
 
         {/* Today's Brief */}
@@ -62,16 +63,16 @@ function StoryPage() {
             📰 Today's Brief
           </h2>
 
-          {!story.what_happened ? (
+          {!story.whatHappened ? (
 
             <div className="space-y-4">
 
               <p className="text-lg">
-                Today's insight isn't available yet.
+                Today's AI insight isn't available yet.
               </p>
 
               <p className="text-gray-600">
-                Please check back after the next daily update.
+                Please run today's GitHub Action to generate it.
               </p>
 
             </div>
@@ -89,7 +90,7 @@ function StoryPage() {
                 </h3>
 
                 <p className="text-gray-700 leading-8 whitespace-pre-line">
-                  {story.what_happened}
+                  {story.whatHappened}
                 </p>
 
               </div>
@@ -103,7 +104,7 @@ function StoryPage() {
                 </h3>
 
                 <p className="text-gray-700 leading-8 whitespace-pre-line">
-                  {story.why_it_matters}
+                  {story.whyItMatters}
                 </p>
 
               </div>
@@ -118,7 +119,7 @@ function StoryPage() {
 
                 <div className="space-y-8">
 
-                  {story.quick_check?.map((question, questionIndex) => {
+                  {story.quickCheck?.map((question, questionIndex) => {
 
                     const selected =
                       selectedAnswers[questionIndex];
@@ -152,8 +153,7 @@ function StoryPage() {
                             } else {
 
                               if (
-                                optionIndex ===
-                                question.correctAnswer
+                                optionIndex === question.correctAnswer
                               ) {
 
                                 buttonClass +=
