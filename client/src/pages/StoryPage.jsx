@@ -153,7 +153,7 @@ function StoryPage() {
                             } else {
 
                               if (
-                                optionIndex === question.correctAnswer
+                                optionIndex === question.answer
                               ) {
 
                                 buttonClass +=
@@ -201,7 +201,7 @@ function StoryPage() {
 
                           <div className="mt-5 rounded-xl bg-slate-50 p-4 border">
 
-                            {selected === question.correctAnswer ? (
+                            {selected === question.answer ? (
 
                               <p className="font-semibold text-green-700 mb-2">
                                 ✅ Correct!

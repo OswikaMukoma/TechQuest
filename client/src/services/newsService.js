@@ -40,7 +40,10 @@ export async function fetchStories() {
 
     whyItMatters: story.why_it_matters,
 
-    quickCheck: story.quick_check,
+    quickCheck:
+      typeof story.quick_check === "string"
+        ? JSON.parse(story.quick_check)
+        : story.quick_check,
   }));
 }
 
